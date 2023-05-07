@@ -15,6 +15,11 @@ class AuthService {
         lastName: user.lastName,
         email: user.email,
         role: user.Role,
+        gender: user.gender,
+        nationality: user.nationality,
+        dateOfBirth: user.dateOfBirth,
+        maritalStatus: user.maritalStatus,
+        profilePicture: user.profilePicture,
         verificationStatus: user.verificationStatus,
       },
       process.env.JWT_SECRET,
@@ -69,6 +74,11 @@ class AuthService {
         lastName: user.lastName,
         email: user.email,
         role: user.Role,
+        gender: user.gender,
+        nationality: user.nationality,
+        dateOfBirth: user.dateOfBirth,
+        maritalStatus: user.maritalStatus,
+        profilePicture: user.profilePicture,
         verificationStatus: user.verificationStatus,
       },
       process.env.JWT_SECRET,
@@ -101,6 +111,11 @@ class AuthService {
         lastName: user.lastName,
         email: user.email,
         role: user.Role,
+        gender: user.gender,
+        nationality: user.nationality,
+        dateOfBirth: user.dateOfBirth,
+        maritalStatus: user.maritalStatus,
+        profilePicture: user.profilePicture,
         verificationStatus: user.verificationStatus,
       },
       process.env.JWT_SECRET,
@@ -132,48 +147,45 @@ class AuthService {
     redisClient.del(userId);
   }
 
- // forgot password using jwt
- static async forgotPassword(email) {
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new Error("User not found");
+  // forgot password using jwt
+  static async forgotPassword(email) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const token = Token.generateToken(
+      {
+        _id: user._id,
+      },
+      process.env.JWT_SECRET,
+      "1h"
+    );
+
+    const sendemail = await emailService(
+      user.email,
+      "Forgot Password",
+      `<p>Click this link to reset your password:<a href="${process.env.CLIENT_URL}/reset-password/${token}">${process.env.CLIENT_URL}/reset-password/${token}</a></p>`
+    );
+    return {
+      token: null,
+      message: "Password reset link sent to your email address.",
+      sendemail,
+    };
   }
-  const token = Token.generateToken(
-    {
-      _id: user._id,
-    },
-    process.env.JWT_SECRET,
-    "1h"
-  );
 
-  const sendemail = await emailService(
-    user.email,
-    "Forgot Password",
-    `<p>Click this link to reset your password:<a href="${process.env.CLIENT_URL}/reset-password/${token}">${process.env.CLIENT_URL}/reset-password/${token}</a></p>`
-  );
-  return {
-    token: null,
-    message: "Password reset link sent to your email address.",
-    sendemail,
-  };
-
- }
-
- // reset password using jwt
- static async resetPassword( password, token) {
-  const decoded = Token.verifyToken(token, process.env.JWT_SECRET);
-  const user = await User.findById(decoded._id);
-  if (!user) {
-    throw new Error("User not found");
+  // reset password using jwt
+  static async resetPassword(password, token) {
+    const decoded = Token.verifyToken(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    user.password = password;
+    await user.save();
+    return {
+      message: "Password reset successfully",
+    };
   }
-  user.password = password;
-  await user.save();
-  return {
-    message: "Password reset successfully",
-  };
-
- }
-
 }
 
 export default AuthService;

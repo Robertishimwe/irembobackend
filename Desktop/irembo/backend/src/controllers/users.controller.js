@@ -1,11 +1,19 @@
 import userService from "../services/users.service";
 import Protection from "../helper/encryption";
+import cloudinary from "../config/cloudinary";
 
-const { findUser, createUser, verifyUser, unverifyUser, deleteUser } = userService;
+const {
+  findUser,
+  createUser,
+  verifyUser,
+  unverifyUser,
+  deleteUser,
+  updateUser,
+} = userService;
 const { hashPassword } = Protection;
 
 class UsersController {
-//create account
+  //create account
   static createUserController = async (req, res) => {
     const hashedPassword = await hashPassword(req.body.password);
     const user = {
@@ -26,61 +34,46 @@ class UsersController {
         .status(201)
         .send({ message: "Account created successfully", createdUser });
     } catch (error) {
-      console.log("Oops, something went wrong", error);
+      console.log("Oops, something went wrong");
       res.status(500).send({ message: "Internal server error", error });
     }
   };
 
-  // static getAllPatients = async (req, res) => {
+  static updateUserContriller = async (req, res) => {
+    const loggedInUser = req.user._id;
+    try {
+      if ("files" in req) {
+        const pictures = req.files;
+        const urls = [];
+        const uploadImages = pictures.map((image) =>
+          cloudinary.uploader.upload(image.path, { folder: "irembo_docs" })
+        );
+        const imageResponse = await Promise.all(uploadImages);
+        imageResponse.forEach((image) => {
+          return urls.push(image.secure_url);
+        });
+        req.body = {
+          ...req.body,
+          profilePicture: urls[0],
+        };
+        const { email } = req.body;
+        const userBeingUpdated = await findUser({ email: email });
+        if (userBeingUpdated._id.toString() !== loggedInUser.toString())
+          return res
+            .status(400)
+            .send({ message: "You are not authorized to update this user" });
 
-  //     const query = { Role: 'patient' };
-  //     const users = await checkManyUser(query);
-  //     if (users) return res.status(200).send({ message: "all patient", users: users })
-  //     res.status(200).send({ message: "no patient found" });
-
-  // };
-
-  // static getAllHealthPractitioner = async (req, res) => {
-
-  //     const query = { Role: 'healthPractitioner' };
-  //     const users = await checkManyUser(query);
-  //     if (users) return res.status(200).send({ message: "all healthPractitioners", users: users })
-  //     res.status(200).send({ message: "no healthPractitioner found" });
-
-  // }
-
-  // static getAllHospital = async (req, res) => {
-
-  //     const query = { Role: 'hospitalAdmin' };
-  //     const users = await checkManyUser(query);
-  //     if (users) return res.status(200).send({ message: "all hospitals", users: users })
-  //     res.status(200).send({ message: "no hospital found" });
-
-  // }
-
-  // static getAllusers = async (req, res) => {
-
-  //     const users = await checkManyUser();
-  //     if (users) return res.status(200).send({ message: "all users", users: users })
-  //     res.status(200).send({ message: "no user found" });
-
-  // }
-
-  // static getSinglePatientByEmail = async (req, res) => {
-  //     const query = { email: req.params.email };
-  //     const user = await checkUser(query);
-  //     if (user) return res.status(200).send({ message: "all users", users: user })
-  //     res.status(200).send({ message: "no user found" });
-
-  // }
-
-  // static getSinglePatientById = async (req, res) => {
-  //     const query = { _id: req.params.id };
-  //     const user = await checkUser(query);
-  //     if (user) return res.status(200).send({ message: "all users", users: user })
-  //     res.status(200).send({ message: "no user found" });
-
-  // }
+        const updatedUser = await updateUser(userBeingUpdated, req.body);
+        return res
+          .status(200)
+          .send({ message: "User updated successfully", updatedUser });
+      }
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Internalll server error", error });
+    }
+  };
 }
 
 export default UsersController;

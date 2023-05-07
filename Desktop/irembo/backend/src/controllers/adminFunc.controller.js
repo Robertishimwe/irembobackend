@@ -1,5 +1,6 @@
 import userService from "../services/users.service";
 import DocumentService from "../services/document.service";
+import emailService from "../services/email.service"
 
 import User from "../models/users";
 
@@ -104,6 +105,9 @@ class AdminFunctions {
       //since doc has field of user which is referance from another table we need to get the user using populate
 
       const user = await verifyUser(userToverify);
+      console.log(doc)
+      await emailService(doc.user.email,`Your Account is now verified`,`Hello ${doc.user.firstName}, your account is now verified`)
+
       return res.status(200).json({ message: "Document", document, user });
     } catch (error) {
         console.log(error)

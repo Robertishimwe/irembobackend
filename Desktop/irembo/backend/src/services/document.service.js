@@ -24,7 +24,7 @@ class DocumentService {
 
   static getDocument = async (query) => {
     try {
-      const document = await Document.findOne(query);
+      const document = await Document.findOne(query).populate("user");
       return document;
     } catch (error) {
       throw new Error(error);

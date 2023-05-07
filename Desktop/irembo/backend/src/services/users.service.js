@@ -13,6 +13,7 @@ class userService {
 
   static findUser = async (query) => {
     const user = await User.findOne(query);
+    console.log(user)
     if (!user) return false;
     return user;
   };
