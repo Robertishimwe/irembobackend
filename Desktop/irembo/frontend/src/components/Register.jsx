@@ -2,6 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -12,25 +13,66 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateField } from "@mui/x-date-pickers/DateField";
+import { toast } from "react-toastify";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Copyright from "../components/Copyright";
+
+import api from "../utils/api";
 
 const theme = createTheme();
 
 export default function Register() {
+  const navigate = useNavigate();
+
+  const genderOptions = [
+    {
+      value: "MALE",
+      label: "MALE",
+    },
+    {
+      value: "FEMALE",
+      label: "FEMALE",
+    },
+  ];
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
-      gender: data.get("gender"),
-      dob: data.get("dob"),
-    });
+    api
+      .post(`/user/create`, {
+        email: data.get("email"),
+        password: data.get("password"),
+        firstName: data.get("firstName"),
+        lastName: data.get("lastName"),
+        gender: data.get("gender"),
+        dateOfBirth: data.get("dob"),
+      })
+      .then((res) => {
+        console.log(res);
+
+        toast.success(
+          "account created successful. you are going to be redirected to login page",
+          {
+            position: "bottom-right",
+            autoClose: 4000,
+          }
+        );
+        setTimeout(() => {
+          navigate("/login");
+        }, 4000);
+      })
+      .catch((err) => {
+        toast.error(
+          err?.response?.data.error
+            ? err?.response?.data.error
+            : err?.response?.data.Message,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+          }
+        );
+      });
   };
 
   return (
@@ -102,7 +144,13 @@ export default function Register() {
                   id="gender"
                   label="Gender"
                   autoFocus
-                />
+                >
+                  {genderOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12}>
                 <TextField

@@ -24,16 +24,15 @@ export default function Users() {
 
   }, [])
 
-
+const usersReversed = users.sort((a, b) => b.CreatedDate.localeCompare(a.CreatedDate));
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'fixed', overflow:'scroll'}}>
     <List sx={{ position:'absoluete', marginTop: '20px', width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-     { users? users.map((user)=>(
-      <User key={user._id} userName={user.firstName + ' ' + user.lastName} email={user.email} status={user.verificationStatus}/>
+     { users? usersReversed.map((user)=>(
+      <User key={user._id} userName={user.firstName + ' ' + user.lastName} email={user.email} status={user.verificationStatus} profilePicture={user.profilePicture}/>
 
      )):null}
-     {/* <User/> */}
         
     </List>
     </div>
