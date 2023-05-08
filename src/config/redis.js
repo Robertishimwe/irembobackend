@@ -22,7 +22,7 @@
 import { createClient } from "redis";
 
 const redisClient = createClient({
-  url: `redis://user:b1oNDXd0Q2fyAXlZj7KF3Nitq2wDCNdF@redis-14165.c80.us-east-1-2.ec2.cloud.redislabs.com:14165`,
+  url: `redis://default:b1oNDXd0Q2fyAXlZj7KF3Nitq2wDCNdF@redis-14165.c80.us-east-1-2.ec2.cloud.redislabs.com:14165`,
 });
 
 redisClient.on("connect", () => {
