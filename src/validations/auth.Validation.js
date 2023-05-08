@@ -56,7 +56,7 @@ const registrationSchema = Joi.object({
 
   
   class RegistrationValidation {
-    static verifyUser = (req, res, next) => {
+    static verifyUserData = (req, res, next) => {
       const { error } = registrationSchema.validate(req.body);
       if (error) {
         return res.status(422).json({
@@ -67,6 +67,6 @@ const registrationSchema = Joi.object({
     };
 }
 
-export {RegistrationValidation};  
+export default RegistrationValidation;  
 
  
