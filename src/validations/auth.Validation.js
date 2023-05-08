@@ -53,8 +53,29 @@ const registrationSchema = Joi.object({
     }),
 });
 
+
+
+
+const loginSchema = Joi.object({
+
+  email: Joi.string().required().email(),
+  password: Joi.string()
+    .required()
+    .empty()
+    .pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#*&]+)[\w@#*&]{8,}$/)
+    .messages({
+      'any.required': '{{#label}} field is required',
+      'string.base': '{{#label}} must be of type string',
+      'string.empty': '{{#label}} can not be empty',
+      'string.pattern.base':
+        '{{#label}} must contain at least a number, a special character, an upper-case letter and longer than 8 characters',
+    }),
+});
+
+
+
   
-  class RegistrationValidation {
+  class AuthValidation {
     static verifyUserData = (req, res, next) => {
       const { error } = registrationSchema.validate(req.body);
       if (error) {
@@ -64,8 +85,19 @@ const registrationSchema = Joi.object({
       }
       next();
     };
+
+    static loginDataValidation = (req, res, next) => {
+      const { error } = loginSchema.validate(req.body);
+      if (error) {
+        return res.status(422).json({
+          error: error.details[0].message.replace(/["'`]+/g, ''),
+        });
+      }
+      next();
+    };
+    
 }
 
-export default RegistrationValidation;  
+export default AuthValidation;  
 
  
