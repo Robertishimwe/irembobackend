@@ -26,7 +26,7 @@ const registrationSchema = Joi.object({
         '{{#label}} must contain only characters from a to z.',
     }),
   gender: Joi.string()
-    .valid('male', 'female', 'other')
+    .valid("MALE", "FEMALE")
     .messages({
       'any.required': '{{#label}} field is required',
       'any.only': '{{#label}} must be either male, female or other',
