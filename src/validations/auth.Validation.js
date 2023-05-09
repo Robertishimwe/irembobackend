@@ -47,8 +47,8 @@ const registrationSchema = Joi.object({
     dateOfBirth: Joi.date().iso().max('now').required().format('DD/MM/YYYY')
     .messages({
       'any.required': '{{#label}} field is required',
-      'date.base': '{{#label}} must be a valid date in ISO format (YYYY-MM-DD)',
-      'date.format': '{{#label}} must be a valid date in ISO format (YYYY-MM-DD)',
+      'date.base': '{{#label}} must be a valid date in ISO format (DD/MM/YYYY)',
+      'date.format': '{{#label}} must be a valid date in ISO format (DD/MM/YYYY)',
       'date.max': '{{#label}} must be a date before or equal to today',
     }),
 });
