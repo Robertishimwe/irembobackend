@@ -44,12 +44,19 @@ const registrationSchema = Joi.object({
       'string.pattern.base':
         '{{#label}} must contain at least a number, a special character, an upper-case letter and longer than 8 characters',
     }),
-    dateOfBirth: Joi.date().iso().max('now').required().format('DD/MM/YYYY')
+    dateOfBirth: Joi.string()
+    .regex(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/)
+    .message('{{#label}} must be in the format DD/MM/YYYY')
+    .custom((value, helpers) => {
+      const date = moment(value, 'DD/MM/YYYY');
+      if (!date.isValid()) {
+        return helpers.message('{{#label}} must be a valid date in the format DD/MM/YYYY');
+      }
+      return value;
+    })
+    .required()
     .messages({
       'any.required': '{{#label}} field is required',
-      'date.base': '{{#label}} must be a valid date in ISO format (DD/MM/YYYY)',
-      'date.format': '{{#label}} must be a valid date in ISO format (DD/MM/YYYY)',
-      'date.max': '{{#label}} must be a date before or equal to today',
     }),
 });
 
