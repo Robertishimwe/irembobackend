@@ -44,7 +44,7 @@ const registrationSchema = Joi.object({
       'string.pattern.base':
         '{{#label}} must contain at least a number, a special character, an upper-case letter and longer than 8 characters',
     }),
-  dateOfBirth: Joi.date().required()
+    dateOfBirth: Joi.date().iso().max('now').required()
     .messages({
       'any.required': '{{#label}} field is required',
       'date.base': '{{#label}} must be a valid date in ISO format (YYYY-MM-DD)',
