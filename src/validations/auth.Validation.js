@@ -50,7 +50,7 @@ const registrationSchema = Joi.object({
     .custom((value, helpers) => {
       const date = moment(value, 'DD/MM/YYYY');
       if (!date.isValid()) {
-        return helpers.message('{{#label}} must be a valid date in the format DD/MM/YYYY');
+        return helpers.message('{{#label}} must be valid date in the format DD/MM/YYYY');
       }
       return value;
     })
