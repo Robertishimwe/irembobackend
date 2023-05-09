@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import moment from 'moment';
 
 const registrationSchema = Joi.object({
   firstName: Joi.string()
