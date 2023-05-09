@@ -62,13 +62,9 @@ const loginSchema = Joi.object({
   password: Joi.string()
     .required()
     .empty()
-    .pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#*&]+)[\w@#*&]{8,}$/)
     .messages({
       'any.required': '{{#label}} field is required',
-      'string.base': '{{#label}} must be of type string',
       'string.empty': '{{#label}} can not be empty',
-      'string.pattern.base':
-        '{{#label}} must contain at least a number, a special character, an upper-case letter and longer than 8 characters',
     }),
 });
 
