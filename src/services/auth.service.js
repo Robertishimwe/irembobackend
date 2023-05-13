@@ -16,6 +16,7 @@ class AuthService {
         email: user.email,
         role: user.Role,
         gender: user.gender,
+        isMfaEnabled: user.isMfaEnabled,
         nationality: user.nationality,
         dateOfBirth: user.dateOfBirth,
         maritalStatus: user.maritalStatus,
@@ -37,6 +38,7 @@ class AuthService {
         `<p>Click this link to login:<a href="${process.env.CLIENT_URL}/login/${loginToken}">${process.env.CLIENT_URL}/login/${loginToken}</a></p>`
       );
       return {
+        isMfaEnabled: true,
         token: null,
         message: "Login link sent to your email address.",
         sendemail,
@@ -76,6 +78,7 @@ class AuthService {
         role: user.Role,
         gender: user.gender,
         nationality: user.nationality,
+        isMfaEnabled: user.isMfaEnabled,
         dateOfBirth: user.dateOfBirth,
         maritalStatus: user.maritalStatus,
         profilePicture: user.profilePicture,
