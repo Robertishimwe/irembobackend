@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.16.8",
-    "@babel/core": "^7.16.12",
-    "@babel/node": "^7.16.8",
-    "@babel/preset-env": "^7.16.11",
+    "@babel/core": "^7.22.1",
+    "@babel/node": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
     "@babel/register": "^7.16.9",
     "bcryptjs": "^2.4.3",
     "bull": "^4.10.4",
